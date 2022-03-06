@@ -1,0 +1,5 @@
+name: Lootbox
+version: 1.0
+author: Loulou
+main: lootbox.main
+api-version: 1.13

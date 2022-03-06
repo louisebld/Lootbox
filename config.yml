@@ -1,0 +1,19 @@
+localisation:
+   x: 10 #x
+   y: 73 #y
+   z: -15 #z
+   type: MAGMA_BLOCK
+
+items:
+   - ENCHANTED_GOLDEN_APPLE
+   - NETHERITE_INGOT
+   - CLAY
+   - DIAMOND
+   - BONE
+
+probabilities:
+   - 0.1
+   - 0.1
+   - 0.3
+   - 0.2
+   - 0.3
