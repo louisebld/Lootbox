@@ -14,17 +14,15 @@ public class NoPick implements Listener {
 
 	@EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-	    Inventory inv = event.getClickedInventory();
-
-	    System.out.println(inv.getType().getDefaultTitle());
-	    if (inv.getType().getDefaultTitle()=="La lootbox de l'espace") {
-			Bukkit.broadcastMessage("noooo");		
+	    	    
+	    if (event.getView().getTitle()=="La lootbox de l'espace") {
+			Bukkit.broadcastMessage("noooo");	
+			event.setCancelled(true);
 
 	    }
 	    
-		ItemStack cursor = event.getCursor();
-		System.out.println(cursor);
-		event.setCancelled(true);
+
+		
 		
 	}
 }
