@@ -2,6 +2,7 @@ package lootbox;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import commands.LootboxCommand;
 import listeners.LootboxListener;
 import listeners.NoPick;
 
@@ -16,6 +17,7 @@ public class main extends JavaPlugin {
 		
 	    getServer().getPluginManager().registerEvents(new LootboxListener(this), this);
 	    getServer().getPluginManager().registerEvents(new NoPick(), this);
+		getCommand("lootbox").setExecutor(new LootboxCommand(this));
 
 	}
 }

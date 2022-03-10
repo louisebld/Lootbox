@@ -2,6 +2,7 @@ package listeners;
 
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -31,11 +32,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class LootboxListener implements Listener {
 
 	private main plug;
-	private List<Player> players = new ArrayList<>(); 
+	private List<Player> players = new ArrayList<>();
 	
 	public LootboxListener(main lootbox) {
 		plug = lootbox;
-		
 	}
 	
 	/*
@@ -52,7 +52,6 @@ public class LootboxListener implements Listener {
     public void onInteract(PlayerInteractEvent event) {
     	
 //    	event.setCancelled(true);
-    	
     	// ------------------------------------------------ init variables
     	
         Action action = event.getAction();
@@ -86,71 +85,120 @@ public class LootboxListener implements Listener {
         	}
         }
 		
-		System.out.println(proba);
-		
-        int nb = proba.size();
-                        
+	                        
         Inventory lootbox = Bukkit.createInventory(null, 9, "La lootbox de l'espace");
         
     	// ------------------------------------------------ start of the test
 
+        Material hand = player.getInventory().getItemInMainHand().getType();
         
+        Material material = player.getInventory().getItemInMainHand().getType();
+		Material key = Material.getMaterial(plug.getConfig().getString("key"));
+
+		if (event.getHand() == EquipmentSlot.HAND) {
+
         if (action==Action.RIGHT_CLICK_BLOCK) {
         
         	if ((block.getX()==x && block.getY()==y && block.getZ()==z) && (block.getType().equals(blocktype))) {
 
-            	int randomItem = 0 + (int)(Math.random() * nb);
+        		if (hand==key) {
+        			player.openInventory(lootbox);
             	
-            	Material choice = (Material) proba.get(randomItem);
-            	ItemStack item = new ItemStack(choice, 1);
-            	ItemMeta custom = item.getItemMeta();
+//            	ItemStack item = new ItemStack(Material.DIRT, 1);
+            	    ItemStack drop = player.getInventory().getItemInMainHand();
+            	    
+	            	
+            	    drop.setAmount(drop.getAmount()-1);
+	            	
             	
             	
-            	double prob = Collections.frequency(proba, choice)*10;
-            	custom.setDisplayName("Bravo "+ prob + "%");
-            	item.setItemMeta(custom);
-            	           	
-            	lootbox.setItem(4, item);
-            	
-            	player.openInventory(lootbox);
-            	
-            	System.out.println("cb");
-            	            	
+            	// ------------------------------------------------ scroll	
+            		new BukkitRunnable() {
+            			
+            			int time = 10;
+            			ItemStack item = null;
+    					@Override
+    					public void run() {
+            		
+    						
+		            		if (time == 0) 
+		            		{
+		            			cancel();
+		            		}
+		            		else {
+		            			    								            			
+			            		item = getRandomItem(proba, item);
+			                	lootbox.setItem(4, item);		                	
+			                	time=time-1;
+		                	
+//		                    Bukkit.broadcastMessage("test");
+		            		
+		            		}
+		                	
+    					}
+    					
+            		
+            		}.runTaskTimer(plug, 0L, 5L);            	
+            	// toutes les secondes : 20L
+            	            		
+                	// ------------------------------------------------ item give
+
             	new BukkitRunnable() {
 
 					@Override
 					public void run() {
 						
+	            		ItemStack item = getRandomItem(proba, null);
+
+						
 //						System.out.println(item);
 		            	player.closeInventory();
 		            	if (!players.contains(player)) {
 		            		players.add(player);
-			            	player.getInventory().addItem(item);
-			            	
-			            	new BukkitRunnable() {
 
 								@Override
 								public void run() {
+
 									players.remove(player);
 								}
 								
-							}.runTaskLater(plug,30);
+							}.runTaskLater(plug,50);
 			            	
 			            	
 		            	}
-		            	System.out.println("cb2");
 					}
             			
             		
             	}.runTaskLater(plug, 50);     	
             
-            	
-            
+        		}
             }
+      
         }
-
+		}
 
 }
     
     
+    public ItemStack getRandomItem(ArrayList<Material> list, ItemStack before) {
+    	
+        int randomItem = 0 + (int)(Math.random() * list.size());
+        ItemStack item;
+    	Material choice = (Material) list.get(randomItem);
+
+    	item = new ItemStack(choice, 1);
+    	
+    	if (item==before) {
+    		item = getRandomItem(list, before);
+    	}
+/*    	ItemMeta custom = item.getItemMeta();
+    	
+    	double prob = Collections.frequency(list, choice)*10;
+    	custom.setDisplayName("Bravo "+ prob + "%");
+    	item.setItemMeta(custom); */ // no name
+    	return item;
+    }
+    
+    
 }
+

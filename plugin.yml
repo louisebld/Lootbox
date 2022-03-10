@@ -3,3 +3,7 @@ version: 1.0
 author: Loulou
 main: lootbox.main
 api-version: 1.13
+commands:
+   lootbox:
+    description: Give the key
+    permission: lootbox.use
