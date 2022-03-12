@@ -18,4 +18,7 @@ probabilities:
    - 0.2
    - 0.3
    
-key: NETHER_STAR
+key: 
+   item: NETHER_STAR
+   name: Key
+   lore: Cette cle permet d'ouvrir la lootbox

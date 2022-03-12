@@ -89,26 +89,20 @@ public class LootboxListener implements Listener {
         Inventory lootbox = Bukkit.createInventory(null, 9, "La lootbox de l'espace");
         
     	// ------------------------------------------------ start of the test
-
-        Material hand = player.getInventory().getItemInMainHand().getType();
+       
+        ItemStack hand = player.getInventory().getItemInMainHand();  	
         
-        Material material = player.getInventory().getItemInMainHand().getType();
-		Material key = Material.getMaterial(plug.getConfig().getString("key"));
-
 		if (event.getHand() == EquipmentSlot.HAND) {
 
         if (action==Action.RIGHT_CLICK_BLOCK) {
+
         
         	if ((block.getX()==x && block.getY()==y && block.getZ()==z) && (block.getType().equals(blocktype))) {
 
-        		if (hand==key) {
+        		if (hand.equals(getKey(hand.getAmount()))) {
         			player.openInventory(lootbox);
-            	
-//            	ItemStack item = new ItemStack(Material.DIRT, 1);
-            	    ItemStack drop = player.getInventory().getItemInMainHand();
             	    
-	            	
-            	    drop.setAmount(drop.getAmount()-1);
+            	    hand.setAmount(hand.getAmount()-1);
 	            	
             	
             	
@@ -132,7 +126,6 @@ public class LootboxListener implements Listener {
 			                	time=time-1;
 		                	
 //		                    Bukkit.broadcastMessage("test");
-		            		
 		            		}
 		                	
     					}
@@ -143,33 +136,21 @@ public class LootboxListener implements Listener {
             	            		
                 	// ------------------------------------------------ item give
 
-            	new BukkitRunnable() {
+                	new BukkitRunnable() {
 
-					@Override
-					public void run() {
-						
-	            		ItemStack item = getRandomItem(proba, null);
-
-						
-//						System.out.println(item);
-		            	player.closeInventory();
-		            	if (!players.contains(player)) {
-		            		players.add(player);
-
-								@Override
-								public void run() {
-
-									players.remove(player);
-								}
-								
-							}.runTaskLater(plug,50);
-			            	
-			            	
-		            	}
-					}
-            			
-            		
-            	}.runTaskLater(plug, 50);     	
+    					@Override
+    					public void run() {
+    						
+    	            		ItemStack item = getRandomItem(proba, null);
+//    						System.out.println(item);
+    		            	player.closeInventory();
+    			            player.getInventory().addItem(item);
+    			         
+    					}
+                			
+                		
+                	}.runTaskLater(plug, 50);     	
+ 	
             
         		}
             }
@@ -198,6 +179,21 @@ public class LootboxListener implements Listener {
     	item.setItemMeta(custom); */ // no name
     	return item;
     }
+    
+    
+    public ItemStack getKey(int nb) {
+		Material key = Material.getMaterial(plug.getConfig().getString("key.item"));
+		ItemStack item = new ItemStack(key, nb);
+    	ItemMeta custom = item.getItemMeta();
+    	custom.setDisplayName(plug.getConfig().getString("key.name"));
+    	custom.setLore(new ArrayList() {{
+    		add(plug.getConfig().getString("key.lore"));
+    		}});
+    	item.setItemMeta(custom);
+        return item;
+
+    }
+    
     
     
 }

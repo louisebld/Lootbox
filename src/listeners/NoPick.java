@@ -16,7 +16,7 @@ public class NoPick implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
 	    	    
 	    if (event.getView().getTitle()=="La lootbox de l'espace") {
-			Bukkit.broadcastMessage("noooo");	
+//			Bukkit.broadcastMessage("noooo");	
 			event.setCancelled(true);
 
 	    }
